@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RampLab — Docs</title>
+<style>
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #1a1a2e;
+    color: #e0e0e0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+  }
+  h1 {
+    color: #4fc3f7;
+    font-size: 22px;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+  p {
+    color: #555;
+    font-size: 13px;
+    margin-bottom: 40px;
+  }
+  .lang-row {
+    display: flex;
+    gap: 20px;
+  }
+  .lang-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 120px;
+    height: 80px;
+    background: #0d1b2a;
+    border: 1px solid #2a2a3e;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #e0e0e0;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .lang-btn:hover {
+    border-color: #4fc3f7;
+    color: #4fc3f7;
+  }
+  .lang-btn .flag {
+    font-size: 28px;
+    margin-bottom: 6px;
+  }
+  .lang-btn .label {
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  footer {
+    position: fixed;
+    bottom: 16px;
+    font-size: 11px;
+    color: #333;
+  }
+</style>
+</head>
+<body>
+<h1>RampLab — Documentation</h1>
+<p>Choose your language / Wybierz język</p>
+<div class="lang-row">
+  <a class="lang-btn" href="en/">
+    <span class="flag">🇬🇧</span>
+    <span class="label">English</span>
+  </a>
+  <a class="lang-btn" href="pl/">
+    <span class="flag">🇵🇱</span>
+    <span class="label">Polski</span>
+  </a>
+</div>
+<footer>&copy; 2026 UncleBravado &mdash; RampLab</footer>
+</body>
+</html>

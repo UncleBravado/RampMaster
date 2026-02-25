@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Parametry kuli — RampLab</title>
+<style>
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 14px;
+    background: #1a1a2e;
+    color: #e0e0e0;
+    max-width: 860px;
+    margin: 40px auto;
+    padding: 0 20px;
+  }
+  h1 {
+    color: #4fc3f7;
+    font-size: 20px;
+    letter-spacing: 1px;
+    margin-bottom: 24px;
+    border-bottom: 1px solid #333;
+    padding-bottom: 10px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  thead tr {
+    background: #0d1b2a;
+    color: #4fc3f7;
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 1px;
+  }
+  th, td {
+    padding: 10px 14px;
+    text-align: left;
+    border-bottom: 1px solid #2a2a3e;
+    vertical-align: top;
+  }
+  td:first-child {
+    color: #aaa;
+    white-space: nowrap;
+    font-size: 12px;
+  }
+  td:nth-child(2) {
+    color: #4fc3f7;
+    font-weight: bold;
+    white-space: nowrap;
+  }
+  td:nth-child(3) {
+    color: #ccc;
+    line-height: 1.5;
+  }
+  tr:hover td {
+    background: rgba(79, 195, 247, 0.04);
+  }
+  .back { display: inline-block; margin-bottom: 24px; font-size: 12px; color: #555; text-decoration: none; }
+  .back:hover { color: #4fc3f7; }
+  footer {
+    margin-top: 32px;
+    font-size: 11px;
+    color: #555;
+    text-align: right;
+  }
+</style>
+</head>
+<body>
+<a class="back" href="./">&larr; Dokumentacja</a>
+<h1>Parametry kuli — opis</h1>
+<table>
+  <thead>
+    <tr>
+      <th>Parametr</th>
+      <th>Polska nazwa</th>
+      <th>Wyjaśnienie</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Mass</td>
+      <td>Masa</td>
+      <td>Masa kuli w gramach. Regulacje BISFed: 263–287 g. Cięższa kula ma większy pęd — trudniej ją zatrzymać i mocniej przesuwa jacka.</td>
+    </tr>
+    <tr>
+      <td>Diameter</td>
+      <td>Średnica</td>
+      <td>Średnica kuli w milimetrach. Regulacje BISFed: 79–93 mm. Większa kula ma wyższy środek ciężkości i większą powierzchnię kontaktu.</td>
+    </tr>
+    <tr>
+      <td>Hardness Grade</td>
+      <td>Stopień twardości</td>
+      <td>Skala 1–10. Miękka kula (1) ma wypełnienie z granulatu, które odkształca się przy uderzeniu — mniej odbicia, więcej tłumienia. Twarda kula (10) zachowuje się bardziej elastycznie. Automatycznie ustawia wartość Crr.</td>
+    </tr>
+    <tr>
+      <td>Floor Friction</td>
+      <td>Tarcie podłoża</td>
+      <td>Tarcie między kulą a podłożem. Wyższe wartości szybciej hamują kulę i zmniejszają poślizg przy kontakcie z podłożem.</td>
+    </tr>
+    <tr>
+      <td>Base Restitution</td>
+      <td>Sprężystość bazowa</td>
+      <td>Współczynnik odbicia przy niskiej prędkości uderzenia (0–30%). Prawdziwe kule boccia mają bardzo niską sprężystość — prawie nie odbijają się od podłoża ani od siebie.</td>
+    </tr>
+    <tr>
+      <td>Surface Grip</td>
+      <td>Przyczepność powierzchni</td>
+      <td>Wpływa na to, jak mocno kula "chwyta" podłoże podczas toczenia. Wyższy grip = silniejszy efekt spinu i krzywej.</td>
+    </tr>
+    <tr>
+      <td>Rolling Resistance (Crr)</td>
+      <td>Opór toczenia (Crr)</td>
+      <td>Stała siła hamująca proporcjonalna do masy i grawitacji (F = Crr × m × g). Główny czynnik określający dystans toczenia. Automatycznie wyprowadzany ze stopnia twardości, ale można nadpisać ręcznie.</td>
+    </tr>
+    <tr>
+      <td>Velocity Drag (Cvd)</td>
+      <td>Opór prędkościowy (Cvd)</td>
+      <td>Siła hamująca proporcjonalna do prędkości (F = Cvd × v). Działa silniej przy szybkim ruchu, słabiej przy wolnym — symuluje opór aerodynamiczny i odkształcenie powierzchni.</td>
+    </tr>
+    <tr>
+      <td>Angular Damping</td>
+      <td>Tłumienie kątowe</td>
+      <td>Jak szybko zanika obrót kuli. Wyższe wartości = kula szybciej przestaje się obracać po uderzeniu.</td>
+    </tr>
+    <tr>
+      <td>Ball-to-Ball Friction</td>
+      <td>Tarcie kula-kula</td>
+      <td>Tarcie w kontakcie między kulami. Wpływa na przeniesienie energii i kąt odskoku przy zderzeniu.</td>
+    </tr>
+    <tr>
+      <td>Spin Sensitivity</td>
+      <td>Czułość na spin</td>
+      <td>Jak bardzo kula reaguje na własny obrót — skręca tor przy dużym spinie.</td>
+    </tr>
+    <tr>
+      <td>Spin Curve Factor</td>
+      <td>Współczynnik krzywizny</td>
+      <td>Siła boczna generowana przez obrót kuli (efekt Magnusa). Wyższe wartości = wyraźniejsza krzywa toru.</td>
+    </tr>
+    <tr>
+      <td>Spin Transfer on Impact</td>
+      <td>Przeniesienie spinu przy uderzeniu</td>
+      <td>Jaka część momentu obrotowego jest przekazywana na drugą kulę lub jacka przy zderzeniu.</td>
+    </tr>
+    <tr>
+      <td>Ball Color</td>
+      <td>Kolor kuli</td>
+      <td>Kolor wizualny kuli na boisku.</td>
+    </tr>
+  </tbody>
+</table>
+<footer>&copy; 2026 UncleBravado &mdash; RampLab</footer>
+</body>
+</html>

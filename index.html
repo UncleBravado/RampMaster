@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RampLab</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: #1a1a2e;
+  color: #e0e0e0;
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 13px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+#app {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  overflow: hidden;
+  min-height: 0;
+}
+#left-panel, #right-panel {
+  background: rgba(0,0,0,0.88);
+  overflow-y: auto;
+  padding: 12px 10px;
+  flex-shrink: 0;
+}
+#left-panel { width: 220px; }
+#right-panel { width: 270px; }
+#canvas-container {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+canvas#canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.panel-title {
+  color: #4fc3f7;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 11px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  margin-top: 8px;
+}
+.panel-title:first-child { margin-top: 0; }
+.slider-row {
+  margin-bottom: 8px;
+}
+.slider-row label {
+  display: block;
+  margin-bottom: 3px;
+  font-size: 12px;
+  color: #ccc;
+}
+.slider-row input[type=range] {
+  width: 100%;
+  accent-color: #4fc3f7;
+}
+.btn {
+  background: #1565c0;
+  color: #e0e0e0;
+  border: none;
+  border-radius: 4px;
+  padding: 7px 10px;
+  cursor: pointer;
+  font-size: 12px;
+  margin-bottom: 5px;
+  transition: background 0.15s;
+}
+.btn:hover { background: #1976d2; }
+.btn.active { outline: 2px solid #4fc3f7; }
+.btn-big {
+  width: 100%;
+  padding: 10px;
+  font-size: 14px;
+  font-weight: bold;
+  background: #1b5e20;
+  margin-bottom: 6px;
+}
+.btn-big:hover { background: #2e7d32; }
+.btn-full { width: 100%; }
+.btn-danger { background: #b71c1c; }
+.btn-danger:hover { background: #c62828; }
+hr {
+  border: none;
+  border-top: 1px solid #333;
+  margin: 10px 0;
+}
+#bottom-bar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background: rgba(0,0,0,0.92);
+  height: 52px;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+#status {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,0.75);
+  color: #4fc3f7;
+  padding: 6px 16px;
+  border-radius: 4px;
+  font-size: 13px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s;
+  white-space: nowrap;
+}
+#measurement-display {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,0.8);
+  color: #fff;
+  padding: 7px 18px;
+  border-radius: 4px;
+  font-size: 13px;
+  display: none;
+  white-space: nowrap;
+}
+.preset-row {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 6px;
+}
+.preset-btn {
+  flex: 1;
+  padding: 5px 2px;
+  font-size: 11px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.save-row {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  margin-bottom: 6px;
+}
+.save-row select {
+  background: #222;
+  color: #e0e0e0;
+  border: 1px solid #444;
+  border-radius: 3px;
+  padding: 4px;
+  font-size: 12px;
+}
+.camera-row {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 6px;
+}
+.camera-row .btn {
+  flex: 1;
+  padding: 5px 4px;
+  font-size: 11px;
+}
+input[type=color] {
+  width: 40px;
+  height: 26px;
+  border: none;
+  cursor: pointer;
+  background: transparent;
+  vertical-align: middle;
+}
+.color-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.color-row label { font-size: 12px; color: #ccc; }
+#cb-random {
+  accent-color: #4fc3f7;
+  width: 14px;
+  height: 14px;
+  vertical-align: middle;
+  cursor: pointer;
+}
+.cb-label {
+  color: #ccc;
+  font-size: 12px;
+  cursor: pointer;
+  user-select: none;
+}
+/* ── Tabs ── */
+.tab-bar {
+  display: flex;
+  gap: 2px;
+  margin-bottom: 10px;
+  border-bottom: 2px solid #333;
+}
+.tab-btn {
+  flex: 1;
+  background: #1a1a1a;
+  color: #888;
+  border: none;
+  border-radius: 4px 4px 0 0;
+  padding: 7px 4px;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  transition: background 0.15s, color 0.15s;
+}
+.tab-btn:hover { background: #252525; color: #ccc; }
+.tab-btn.active {
+  background: #0d2137;
+  color: #4fc3f7;
+  border-bottom: 2px solid #4fc3f7;
+  margin-bottom: -2px;
+}
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+</style>
+</head>
+<body>
+<div id="app">
+  <!-- LEFT PANEL -->
+  <div id="left-panel">
+    <div class="panel-title">Ramp Controls</div>
+
+    <div class="slider-row">
+      <label>Angle: <span id="angle-val">0</span>°</label>
+      <input type="range" id="angle-slider" min="-45" max="45" step="0.1" value="0">
+    </div>
+
+    <div class="slider-row">
+      <label>Power: <span id="power-val">65</span>%</label>
+      <input type="range" id="power-slider" min="0" max="100" step="1" value="65">
+    </div>
+
+    <button class="btn btn-big" id="btn-throw">THROW BALL</button>
+    <button class="btn btn-full" id="btn-throw-again">Throw Again</button>
+
+    <hr>
+
+    <div class="panel-title">Camera</div>
+    <div class="camera-row">
+      <button class="btn" onclick="setCameraPreset('side')">Side</button>
+      <button class="btn" onclick="setCameraPreset('top')">Top</button>
+      <button class="btn" onclick="setCameraPreset('ramp')">Ramp</button>
+    </div>
+
+    <div class="panel-title" style="margin-top:8px;">View Tools</div>
+    <button class="btn btn-full active" id="btn-trajectory">Show Trajectory</button>
+    <button class="btn btn-full" id="btn-resume" style="display:none;">Resume</button>
+  </div>
+
+  <!-- CANVAS -->
+  <div id="canvas-container">
+    <canvas id="canvas"></canvas>
+    <div id="status"></div>
+    <div id="measurement-display"></div>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div id="right-panel">
+    <div class="tab-bar">
+      <button class="tab-btn active" id="tab-bocce" onclick="switchTab('bocce')">Bocce Balls</button>
+      <button class="tab-btn" id="tab-pallino" onclick="switchTab('pallino')">Jack</button>
+    </div>
+
+    <!-- ── BOCCE BALLS TAB ── -->
+    <div id="tab-content-bocce" class="tab-content active">
+      <div class="slider-row">
+        <label>Mass: <span id="mass-val">275</span> g</label>
+        <input type="range" id="mass-slider" min="263" max="287" step="1" value="275">
+      </div>
+      <div class="slider-row">
+        <label>Diameter: <span id="diam-val">86</span> mm (BISFed 79–93mm)</label>
+        <input type="range" id="diam-slider" min="79" max="93" step="1" value="86">
+      </div>
+      <div class="slider-row">
+        <label>Hardness Grade: <span id="hardness-val">5</span> / 10</label>
+        <input type="range" id="hardness-slider" min="1" max="10" step="1" value="5">
+      </div>
+      <div class="slider-row">
+        <label>Floor Friction: <span id="friction-val">5</span>%</label>
+        <input type="range" id="friction-slider" min="0" max="100" step="1" value="5">
+      </div>
+      <div class="slider-row">
+        <label>Base Restitution: <span id="restitution-val">5</span>%</label>
+        <input type="range" id="restitution-slider" min="0" max="30" step="1" value="5">
+      </div>
+      <div class="slider-row">
+        <label>Surface Grip: <span id="grip-val">30</span>%</label>
+        <input type="range" id="grip-slider" min="0" max="100" step="1" value="30">
+      </div>
+      <div class="slider-row">
+        <label>Rolling Resistance (Crr): <span id="crr-val">0.030</span></label>
+        <input type="range" id="crr-slider" min="5" max="80" step="1" value="30">
+      </div>
+      <div class="slider-row">
+        <label>Velocity Drag (Cvd): <span id="cvd-val">0.10</span></label>
+        <input type="range" id="cvd-slider" min="0" max="50" step="1" value="10">
+      </div>
+      <div class="slider-row">
+        <label>Angular Damping: <span id="angdamp-val">50</span>%</label>
+        <input type="range" id="angdamp-slider" min="0" max="100" step="1" value="50">
+      </div>
+      <div class="slider-row">
+        <label>Ball-to-Ball Friction: <span id="ballfric-val">3</span>%</label>
+        <input type="range" id="ballfric-slider" min="0" max="100" step="1" value="3">
+      </div>
+      <div class="slider-row">
+        <label>Spin Sensitivity: <span id="spinsens-val">30</span>%</label>
+        <input type="range" id="spinsens-slider" min="0" max="100" step="1" value="30">
+      </div>
+      <div class="slider-row">
+        <label>Spin Curve Factor: <span id="spincurve-val">30</span>%</label>
+        <input type="range" id="spincurve-slider" min="0" max="100" step="1" value="30">
+      </div>
+      <div class="slider-row">
+        <label>Spin Transfer on Impact: <span id="spintransfer-val">30</span>%</label>
+        <input type="range" id="spintransfer-slider" min="0" max="100" step="1" value="30">
+      </div>
+      <div class="color-row">
+        <label>Ball Color:</label>
+        <input type="color" id="ball-color" value="#e53935">
+      </div>
+      <hr>
+      <div class="panel-title">Presets</div>
+      <div class="preset-row" id="preset-load-row">
+        <button class="btn preset-btn" data-slot="0">Empty</button>
+        <button class="btn preset-btn" data-slot="1">Empty</button>
+        <button class="btn preset-btn" data-slot="2">Empty</button>
+        <button class="btn preset-btn" data-slot="3">Empty</button>
+        <button class="btn preset-btn" data-slot="4">Empty</button>
+        <button class="btn preset-btn" data-slot="5">Empty</button>
+      </div>
+      <div class="save-row">
+        <select id="save-slot-select">
+          <option value="0">Slot 1</option><option value="1">Slot 2</option>
+          <option value="2">Slot 3</option><option value="3">Slot 4</option>
+          <option value="4">Slot 5</option><option value="5">Slot 6</option>
+        </select>
+        <button class="btn" id="btn-save-preset">Save</button>
+      </div>
+      <button class="btn btn-full" id="btn-reset-default">Reset to Default</button>
+    </div>
+
+    <!-- ── PALLINO TAB ── -->
+    <div id="tab-content-pallino" class="tab-content">
+      <div class="slider-row">
+        <label>Hardness Grade: <span id="p-hardness-val">5</span> / 10</label>
+        <input type="range" id="p-hardness-slider" min="1" max="10" step="1" value="5">
+      </div>
+      <div class="slider-row">
+        <label>Base Restitution: <span id="p-restitution-val">5</span>%</label>
+        <input type="range" id="p-restitution-slider" min="0" max="30" step="1" value="5">
+      </div>
+      <div class="slider-row">
+        <label>Rolling Resistance (Crr): <span id="p-crr-val">0.050</span></label>
+        <input type="range" id="p-crr-slider" min="5" max="80" step="1" value="50">
+      </div>
+      <div class="slider-row">
+        <label>Velocity Drag (Cvd): <span id="p-cvd-val">0.10</span></label>
+        <input type="range" id="p-cvd-slider" min="0" max="50" step="1" value="10">
+      </div>
+      <div class="slider-row">
+        <label>Angular Damping: <span id="p-angdamp-val">50</span>%</label>
+        <input type="range" id="p-angdamp-slider" min="0" max="100" step="1" value="50">
+      </div>
+      <div class="slider-row">
+        <label>Floor Friction: <span id="p-floorfric-val">30</span>%</label>
+        <input type="range" id="p-floorfric-slider" min="0" max="100" step="1" value="30">
+      </div>
+      <div class="slider-row">
+        <label>Ball-to-Ball Friction: <span id="p-ballfric-val">30</span>%</label>
+        <input type="range" id="p-ballfric-slider" min="0" max="100" step="1" value="30">
+      </div>
+      <div class="slider-row">
+        <label>Spin Sensitivity: <span id="p-spinsens-val">60</span>%</label>
+        <input type="range" id="p-spinsens-slider" min="0" max="100" step="1" value="60">
+      </div>
+      <div class="slider-row">
+        <label>Spin Curve Factor: <span id="p-spincurve-val">50</span>%</label>
+        <input type="range" id="p-spincurve-slider" min="0" max="100" step="1" value="50">
+      </div>
+      <div class="slider-row">
+        <label>Spin Transfer on Impact: <span id="p-spintransfer-val">50</span>%</label>
+        <input type="range" id="p-spintransfer-slider" min="0" max="100" step="1" value="50">
+      </div>
+      <hr>
+      <div class="panel-title">Jack Presets</div>
+      <div class="preset-row" id="p-preset-load-row">
+        <button class="btn preset-btn" data-slot="0">Empty</button>
+        <button class="btn preset-btn" data-slot="1">Empty</button>
+        <button class="btn preset-btn" data-slot="2">Empty</button>
+        <button class="btn preset-btn" data-slot="3">Empty</button>
+        <button class="btn preset-btn" data-slot="4">Empty</button>
+        <button class="btn preset-btn" data-slot="5">Empty</button>
+      </div>
+      <div class="save-row">
+        <select id="p-save-slot-select">
+          <option value="0">Slot 1</option><option value="1">Slot 2</option>
+          <option value="2">Slot 3</option><option value="3">Slot 4</option>
+          <option value="4">Slot 5</option><option value="5">Slot 6</option>
+        </select>
+        <button class="btn" id="btn-p-save-preset">Save</button>
+      </div>
+      <button class="btn btn-full" id="btn-p-reset-default">Reset to Default</button>
+    </div>
+  </div>
+</div>
+
+<!-- BOTTOM BAR -->
+<div id="bottom-bar">
+  <button class="btn" id="btn-slowmo">Slow Mo</button>
+  <button class="btn" id="btn-freeze">Freeze Impact</button>
+  <button class="btn" id="btn-trail">Trail</button>
+  <button class="btn active" id="btn-ghost">Ghost Ball</button>
+  <button class="btn" id="btn-place-pallino">Place Jack</button>
+  <button class="btn" id="btn-measure">Measure</button>
+  <button class="btn" id="btn-labels">Labels</button>
+  <button class="btn" id="btn-remove-ball">Remove Ball</button>
+  <button class="btn btn-danger" id="btn-reset">Reset All</button>
+  <button class="btn" id="btn-physics-debug">Physics Debug</button>
+  <span style="color:#4fc3f7;font-size:12px;white-space:nowrap;">Vel: <span id="vel-display">0.00</span> m/s</span>
+  <span style="color:#666;font-size:11px;margin-left:auto;">&copy; 2026 UncleBravado</span>
+  <label class="cb-label">
+    <input type="checkbox" id="cb-random"> Random Variation
+  </label>
+</div>
+
+<!-- SCRIPTS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cannon.js/0.6.2/cannon.min.js"></script>
+<script src="boccia.min.js"></script>
+</body>
+</html>
